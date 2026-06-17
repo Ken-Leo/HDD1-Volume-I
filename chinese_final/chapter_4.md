@@ -196,4 +196,65 @@ $$
 F _ { X } ( x ) = { \left\{ \begin{array} { l l } { 0 , } & { x < - 1 } \\ { 0 . 5 , } & { - 1 \leq x < 1 } \\ { 1 , } & { x \geq 1 } \end{array} \right. }\tag{4.8}
 $$
 
-\n\n## 4.2.1 系综平均\n\n在实际应用中，有时不需要计算随机变量的精确概率函数（例如累积分布函数、概率密度函数等），而只需知道该随机变量对于该事件的平均行为 (average behavior)，也就是所谓的“统计平均 (statistic average)”，它以随机变量的“期望值 (expected value)”形式出现。通常，随机变量的统计平均被称为“系综平均 (ensemble average)”。\n\n假设 $X$ 为掷骰子实验的随机变量，$N$ 为掷骰子的总次数，$k = \{1, 2, 3, 4, 5, 6\}$ 为掷骰子结果的数值，$n_k$ 为掷骰子结果为 $k$ 的次数。那么，掷骰子 $N$ 次结果的平均值称为“样本平均 (sample mean)”，其值为：\n\n$$\n\\langle X \\rangle = \\frac { n _ { 1 } + 2 n _ { 2 } + 3 n _ { 3 } + 4 n _ { 4 } + 5 n _ { 5 } + 6 n _ { 6 } } { N }\\tag{4.9}\n$$\n\n其中 $\\langle \\cdot \\rangle$ 为时间平均算子 (time-average operator)，$N = n_1 + n_2 + n_3 + n_4 + n_5 + n_6$。若 $N \\gg 1$，则 $n_k / N \\approx \\operatorname* { P r } \\{ X = k \\}$，因此方程 (4.9) 可以改写为：\n\n$$\n\\langle X \\rangle \\approx \\sum _ { k = 1 } ^ { 6 } k \\operatorname* { P r } \\{ X = k \\}\\tag{4.10}\n$$\n\n离散随机变量 $X$ 的平均值 (mean) 或期望值，若其取值为 $\alpha_k$ 且概率为 $\mathrm{Pr}\{X = \alpha_k\}$，定义为：\n\n$$\nE[X] = \sum_k \alpha_k \operatorname* { P r } \{ X = \alpha_k \}\tag{4.11}\n$$\n\n其中 $E[\cdot]$ 是期望算子。也可以用概率密度函数 $p_X(\alpha)$ 表示为：\n\n$$\nE[X] = \int_{-\infty}^{\infty} \alpha p_X(\alpha) d\alpha\tag{4.12}\n$$\n\n方程 (4.12) 同样可用于定义连续随机变量 (continuous random variable) 的期望值。\n\n**示例 4.3**：求抛硬币和掷骰子实验的平均值（或期望值），假设硬币和骰子均未加权（即公正的）。\n\n**解**：对于抛硬币实验，随机变量 $X$ 的平均值为：\n\n$$\n{ \\begin{array} { l c l } { E [ X ] } & { = } & { ( 1 ) \\mathrm { { P r } } \\{ X = 1 \\} + ( - 1 ) \\mathrm { { P r } } \\{ X = - 1 \\} } \\\\ { } & { } & { } \\\\ { } & { = } & { 1 ( 0 . 5 ) - 1 ( 0 . 5 ) } \\\\ { } & { } & { } \\\\ { } & { = } & { 0 } \\end{array} }\n$$\n\n同理，对于掷骰子实验，随机变量 $X$ 的平均值为：\n\n$$ \nE [ X ] = \\sum _ { k = 1 } ^ { 6 } k \\operatorname* { P r } \\{ X = k \\} = { \\frac { 1 } { 6 } } \\sum _ { k = 1 } ^ { 6 } k = 3 . 5\n$$ \n\n其中，对于所有 $k$ 值，$\\operatorname* { P r } \\{ X = k \\} = 1/6$。\n\n**示例 4.4**：假设均匀随机变量 $X$ 的概率密度函数为：\n\n$$\n p _ { X } ( x ) = { \\left\\{ \\begin{array} { l l } { { \\frac { 1 } { b - a } } , } & { a \\leq x \\leq b } \\\\ { 0 , } & { { \\mathrm { e l s e } } } \\end{array} \\right. }\n$$\n\n求随机变量 $X$ 的平均值。\n\n**解**：随机变量 $X$ 的平均值可通过以下方式求得：\n\n$$\n{ \\begin{array} { l l l } { E [ X ] } & { = } & { \\displaystyle \\int _ { - \\infty } ^ { \\infty } \\alpha p _ { X } ( \\alpha ) d \\alpha } \\\\ & { = } & { { \\frac { 1 } { b - a } } \\int _ { a } ^ { b } \\alpha d \\alpha } \\\\ & { = } & { { \\frac { 1 } { b - a } } \\left( { \\frac { b ^ { 2 } - a ^ { 2 } } { 2 } } \\right) } \\\\ & { = } & { { \\frac { a + b } { 2 } } } \\end{array} }\n$$\n\n因此，均匀随机变量 $X$ 的平均值为 $(a + b) / 2$。\n\n## 4.2.2 矩\n\n对于取值为实数的随机变量 $X$，其概率分布的 $n$ 阶矩 (moment)，或称 $n$ 阶统计平均值，定义为：\n\n$$\nE [ X ^ { n } ] = \int _ { - \infty } ^ { \infty } x ^ { n } p _ { X } ( x ) d x\tag{4.13}\n$$\n\n在通信系统分析中，随机变量 $X$ 最常用的矩是 1 阶矩和 2 阶矩，即 $E[X]$ 和 $E[X^2]$。其中 $E[X]$ 是 $X$ 的平均值，而 $E[X^2]$ 是 $X$ 的均方值 (mean-square value)。假设 $X$ 和 $Y$ 为随机变量，$a$ 为常数，则期望算子具有以下重要性质：\n\n1) $E [ a ] = a$\n2) $E [ a X ] = a E [ X ]$\n3) $E [ X + Y ] = E [ X ] + E [ Y ]$\n\n此外，通信系统中常用的另一种矩是 $n$ 阶中心矩 (central moment)，定义为：\n\n$$\nE [ ( X - m _ { X } ) ^ { n } ] = \int _ { - \infty } ^ { \infty } ( x - m _ { X } ) ^ { n } p _ { X } ( x ) d x\tag{4.14}\n$$\n\n其中 $m _ { X } = E [ X ]$ 是 $X$ 的平均值，被视为常数。最常用的中心矩是二阶中心矩，通常被称为“方差 (variance)”，其值为：\n\n$$\n{ \begin{array} { l l l } { \operatorname { V a r } ( X ) } & { = } & { \sigma _ { X } ^ { 2 } } \\\\ & { = } & { E [ ( X - m _ { X } ) ^ { 2 } ] } \\\\ & { = } & { E [ X ^ { 2 } - 2 X m _ { X } + m _ { X } ^ { 2 } ] } \\\\ & { = } & { E [ X ^ { 2 } ] - 2 E [ m _ { X } X ] + E [ m _ { X } ^ { 2 } ] } \\\\ & { = } & { E [ X ^ { 2 } ] - 2 m _ { X } E [ X ] + m _ { X } ^ { 2 } } \\\\ & { = } & { E [ X ^ { 2 } ] - m _ { X } ^ { 2 } } \end{array} }\n$$\n\n其中 $\sigma _ { X }$ 是 $X$ 的标准差 (standard deviation)。方差是随机变量 $X$ “随机性 (randomness)”的一种衡量标准。\n\n假设 $X$ 为随机变量，$a$ 为常数，则方差具有以下重要性质：\n\n1) $\\mathrm { V a r } ( a ) = 0$\n2) $\\operatorname { V a r } ( X + a ) = \\operatorname { V a r } ( X )$\n3) $\\mathrm { V a r } ( a X ) = a ^ { 2 } \\mathrm { V a r } ( X )$\n\n**示例 4.5**：求区间 $[a, b]$ 上的均匀随机变量 $X$ 的方差，如图 4.2(a) 所示。\n\n**解**：根据示例 4.4，均匀随机变量 $X$ 的平均值为 $(a + b) / 2$。因此，$X$ 的方差可通过以下方式求得：\n\n$$\n{ \begin{array} { l l l } { \displaystyle \sigma _ { X } ^ { 2 } } & { = } & { E [ ( X - m _ { X } ) ^ { 2 } ] } \\\\ & { = } & { { \\cfrac { 1 } { b - a } } \\displaystyle \\int _ { a } ^ { b } \\left( x - { \\cfrac { a + b } { 2 } } \\right) ^ { 2 } d x } \\end{array} }\n$$\n\n令 $y = x - (a + b) / 2$，则有：\n\n$$\n{ \begin{array} { l l l } { \\sigma _ { X } ^ { 2 } } & { = } & { { \\frac { 1 } { b - a } } \\displaystyle \\int _ { - ( b - a ) / 2 } ^ { ( b - a ) / 2 } y ^ { 2 } d y } \\\\ & { = } & { { \\frac { ( b - a ) ^ { 2 } } { 1 2 } } } \\end{array} }\n$$\n\n因此，均匀随机变量 $X$ 的方差为 $(b - a)^2 / 12$。\n\n## 4.2.3 多个随机变量\n\n假设 $X$ 和 $Y$ 是同一个样本空间 (sample space) 中的随机变量。联合累积分布函数 (joint cumulative distribution function) 定义为：\n\n$$\nF _ { X Y } ( x , y ) = \operatorname* { P r } \{ X \leq x , Y \leq y \}\tag{4.15}\n$$\n\n其重要性质如下：\n\n1) 若 $x_1 \leq x_2$ 且 $y_1 \leq y_2$，则 $F _ { X Y } ( x _ { 1 } , y _ { 1 } ) \leq F _ { X Y } ( x _ { 2 } , y _ { 2 } )$\n2) $F _ { X Y } ( - \infty , y ) = F _ { X Y } ( x , - \infty ) = 0$\n3) $F _ { X Y } ( \infty , \infty ) = 1$\n4) $F_X(x) = F_{XY}(x, \infty) = \int_{-\infty}^{\infty} F_{XY}(x, y) dy$\n5) $F_Y(y) = F_{XY}(\infty, y) = \int_{-\infty}^{\infty} F_{XY}(x, y) dx$\n\n同理，联合概率密度函数 (joint probability density function) 定义为：\n\n$$\n p _ { X Y } ( x , y ) = \frac { \partial ^ { 2 } } { \partial x \partial y } F _ { X Y } ( x , y )\tag{4.16}\n$$\n\n其重要性质如下：\n\n1) $F _ { X Y } ( x , y ) = \int _ { - \infty } ^ { y } \int _ { - \infty } ^ { x } p _ { X Y } ( u , v ) du dv$\n2) $p _ { X } ( x ) = \int _ { - \infty } ^ { \infty } p _ { X Y } ( x , y ) dy$\n3) $p _ { Y } ( y ) = \int _ { - \infty } ^ { \infty } p _ { X Y } ( x , y ) dx$\n4) $\int _ { - \infty } ^ { \infty } \int _ { - \infty } ^ { \infty } p _ { X Y } ( x , y ) dx dy = 1$\n\n此外，在给定随机变量 $Y = y$ 的条件下，随机变量 $X$ 的条件概率密度函数 (conditional probability density function) 定义为：\n\n$$\n p _ { X | Y } ( x | y ) = { \left\{ \begin{array} { l l } { { \frac { p _ { X Y } ( x , y ) } { p _ { Y } ( y ) } } , } & { p _ { Y } ( y ) \neq 0 } \\\\ { 0 , } & { { \mathrm { e l s e } } } \end{array} \right. }\tag{4.17}\n$$\n\n若随机变量 $X$ 和 $Y$ 统计独立 (statistically independent)，则有：\n\n$$\n p _ { X Y } ( x , y ) = p _ { X } ( x ) p _ { Y } ( y )\tag{4.18}\n$$\n\n因此，方程 (4.17) 可简化为：\n\n$$\n p _ { X | Y } ( x | y ) = p _ { X } ( x )\tag{4.19}\n$$\n\n假设 $g(X, Y)$ 是随机变量 $X$ 和 $Y$ 的函数，则 $g(X, Y)$ 的期望值可通过以下方式求得：\n\n$$\nE [ g ( X , Y ) ] = \int _ { - \infty } ^ { \infty } \int _ { - \infty } ^ { \infty } g ( X , Y ) p _ { X Y } ( x , y ) dx dy\tag{4.20}\n$$
+## 4.2.3 多个随机变量
+
+假设 $X$ 和 $Y$ 是同一样本空间 (sample space) 中的随机变量。联合累积分布函数 (joint cumulative distribution function) 定义为：
+
+$$
+F_{XY}(x, y) = \operatorname{Pr}\{X \leq x, Y \leq y\}\tag{4.15}
+$$
+
+其重要性质如下：
+
+1) $F_{XY}(x_1, y_1) \leq F_{XY}(x_2, y_2)$，若 $x_1 \leq x_2$ 且 $y_1 \leq y_2$。
+2) $$
+F_{XY}(-\infty, y) = F_{XY}(x, -\infty) = 0
+$$
+
+3) $F_{XY}(\infty, \infty) = 1$
+
+4) $F_X(x) = F_{XY}(x, \infty)$
+
+5) $F_Y(y) = F_{XY}(\infty, y)$
+
+同样地，联合概率密度函数 (joint probability density function) 定义为：
+
+$$
+p_{XY}(x, y) = \frac{\partial^2}{\partial x \partial y} F_{XY}(x, y)\tag{4.16}
+$$
+
+其重要性质如下：
+
+1) $F_{XY}(x, y) = \int_{-\infty}^{y} \int_{-\infty}^{x} p_{XY}(u, v) du dv$
+
+2) $p_X(x) = \int_{-\infty}^{\infty} p_{XY}(x, y) dy$
+
+3) $p_Y(y) = \int_{-\infty}^{\infty} p_{XY}(x, y) dx$
+
+4) $\int_{-\infty}^{\infty} \int_{-\infty}^{\infty} p_{XY}(x, y) dx dy = 1$
+
+此外，在给定随机变量 $Y = y$ 的条件下，随机变量 $X$ 的条件概率密度函数 (conditional probability density function) 定义为：
+
+$$
+p_{X|Y}(x|y) = \begin{cases} \frac{p_{XY}(x, y)}{p_Y(y)}, & p_Y(y) \neq 0 \\ 0, & \text{其他} \end{cases}\tag{4.17}
+$$
+
+如果随机变量 $X$ 和 $Y$ 统计独立 (statistically independent)，则有：
+
+$$
+p_{XY}(x, y) = p_X(x) p_Y(y)\tag{4.18}
+$$
+
+因此，方程 (4.17) 可简化为：
+
+$$
+p_{X|Y}(x|y) = p_X(x)\tag{4.19}
+$$
+
+若 $g(X, Y)$ 是随机变量 $X$ 和 $Y$ 的函数，则 $g(X, Y)$ 的期望值可通过以下方式计算：
+
+$$
+E[g(X, Y)] = \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} g(X, Y) p_{XY}(x, y) dx dy\tag{4.20}
+$$
+
+
