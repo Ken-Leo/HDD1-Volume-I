@@ -257,4 +257,226 @@ $$
 E[g(X, Y)] = \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} g(X, Y) p_{XY}(x, y) dx dy\tag{4.20}
 $$
 
+## 4.2.4 随机变量之间的关系
+
+假设 $X$ 和 $Y$ 是两个随机变量，其均值分别为 $m_X$ 和 $m_Y$，方差分别为 $\sigma_X^2$ 和 $\sigma_Y^2$。这两个随机变量之间的一些重要关系如下：
+
+1) **相关度 (correlation)** 定义为：
+$$
+R_{XY} = E[XY] = \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} xy p_{XY}(x, y) dx dy\tag{4.21}
+$$
+
+2) **协方差 (covariance)** 定义为：
+$$
+\begin{array}{lcl}
+\operatorname{Cov}(X, Y) & = & E[(X - m_X)(Y - m_Y)] \\
+& = & E[XY] - E[X m_Y] - E[m_X Y] + E[m_X m_Y] \\
+& = & E[XY] - E[X] m_Y - m_X E[Y] + m_X m_Y \\
+& = & E[XY] - m_X m_Y - m_X m_Y + m_X m_Y \\
+& = & E[XY] - m_X m_Y
+\end{array}\tag{4.22}
+$$
+这是因为 $E[X] = m_X$ 和 $E[Y] = m_Y$ 是常数。
+
+3) **相关系数 (correlation coefficient)** 定义为：
+$$
+\rho_{XY} = \frac{\operatorname{Cov}(X, Y)}{\sigma_X \sigma_Y} = \frac{E[XY] - m_X m_Y}{\sigma_X \sigma_Y}\tag{4.23}
+$$
+其取值范围为：
+$$
+-1 \le \rho_{XY} \le 1
+$$
+
+根据上述三个定义，随机变量 $X$ 和 $Y$ 被称为**正交 (Orthogonal)**，当且仅当：
+$$
+E[XY] = 0\tag{4.24}
+$$
+
+同样地，随机变量 $X$ 和 $Y$ 被称为**不相关 (uncorrelated)**，当且仅当：
+$$
+\rho_{XY} = 0 \implies E[XY] = E[X] E[Y]\tag{4.25}
+$$
+
+不相关随机变量的一个重要性质是：若定义 $Z = X + Y$ 为两者的和，则 $Z$ 的方差等于 $X$ 和 $Y$ 的方差之和，即：
+$$
+\sigma_Z^2 = \sigma_X^2 + \sigma_Y^2\tag{4.26}
+$$
+
+此外，随机变量 $X$ 和 $Y$ 被认为是**统计独立 (statistically independent)** 的，当且仅当：
+$$
+p_{XY}(x, y) = p_X(x) p_Y(y) \implies E[XY] = E[X] E[Y]\tag{4.27}
+$$
+
+观察方程 (4.23) 可以发现，如果随机变量 $X$ 和 $Y$ 统计独立，则它们的相关系数 $\rho_{XY} = 0$ 是自动成立的。换句话说，统计独立必定导致不相关。但反之则不一定成立，即不相关并不一定意味着统计独立，除非 $X$ 和 $Y$ 是**联合高斯随机变量 (joint Gaussian random variable)** [36]。
+
+## 4.2.5 高斯概率密度函数
+
+高斯随机变量 (Gaussian random variable) 在通信系统的分析中被广泛使用，例如用于建模噪声和信息信号。高斯随机变量 $X$ 的概率密度函数如下：
+
+$$
+p_X(x) = \frac{1}{\sqrt{2\pi \sigma_X^2}} \exp \left( -\frac{(x - m_X)^2}{2\sigma_X^2} \right)\tag{4.28}
+$$
+
+其中 $\exp\{\cdot\}$ 为指数函数，$m_X$ 为 $X$ 的均值，$\sigma_X^2$ 为其方差，记作 $p_X(x) \sim \mathcal{N}(m_X, \sigma_X^2)$。
+
+![](images/chapter_4/f08a245be4182535e6b4f52ac18024e97ec1c62ce9c28af4547f84b33fd98c16.jpg)
+![](images/chapter_4/54ebebd06877d9e56328d1f0c62eeca81abaeca5d833eb9e2bfdbaff696dcc75.jpg)
+图 4.4: $\mathcal{N}(0, 1)$ 高斯随机变量的示例特性。
+
+在实际应用中，高斯随机变量的概率密度函数完全由其均值 $m_X$ 和方差 $\sigma_X^2$ 决定。当 $m_X = 0$ 且 $\sigma_X^2 = 1$ 时，该概率密度函数 $\mathcal{N}(0, 1)$ 被称为“标准正态分布 (standard normal distribution)”。图 4.4 展示了 $\mathcal{N}(0, 1)$ 高斯随机变量的特性，从图 4.4(a) 的直方图可以看出，随机变量 $X$ 的大部分取值集中在零附近，这与 $m_X = 0$ 的均值相一致。
+
+热噪声 (thermal noise) 存在于所有电子设备中，是由电子设备长时间运行产生的热量导致电子随机运动而产生的。因此，高斯随机变量常被用来模拟热噪声，这源于“中心极限定理 (central limit theorem)” [36]，该定理指出：大量独立随机变量之和的概率密度函数，在变量数量趋于无穷大时，将趋近于高斯概率密度函数。
+
+对于概率密度函数为 $\mathcal{N}(m_X, \sigma_X^2)$ 的高斯随机变量，其累积分布函数 $F_X(x)$ 可表示为：
+
+$$
+\begin{array}{lcl}
+F_X(x) & = & \operatorname{Pr}\{X \le x\} \\
+& = & \displaystyle \int_{-\infty}^{x} p_X(\alpha) d\alpha \\
+& = & 1 - \displaystyle \int_{x}^{+\infty} p_X(\alpha) d\alpha \\
+& = & 1 - \displaystyle \frac{1}{\sqrt{2\pi \sigma_X^2}} \displaystyle \int_{x}^{+\infty} \exp \left( -\frac{(\alpha - m_X)^2}{2\sigma_X^2} \right) d\alpha
+\end{array}\tag{4.29}
+$$
+
+令 $v = (\alpha - m_X) / \sigma_X$，则 $dv = d\alpha / \sigma_X$。于是方程 (4.29) 可改写为：
+
+$$
+\begin{array}{lcl}
+F_X(x) & = & 1 - \frac{1}{\sqrt{2\pi}} \int_{\frac{x - m_X}{\sigma_X}}^{\infty} \exp \left( -\frac{v^2}{2} \right) dv \\
+& = & 1 - Q\left( \frac{x - m_X}{\sigma_X} \right)
+\end{array}\tag{4.30}
+$$
+
+其中 $Q(x)$ 函数定义为：
+$$
+Q(x) = \frac{1}{\sqrt{2\pi}} \int_{x}^{\infty} \exp \left\{ -\frac{v^2}{2} \right\} dv\tag{4.31}
+$$
+
+$Q(x)$ 表示高斯概率密度函数尾部的积分值。通常情况下，不同 $x$ 值的 $Q(x)$ 可以通过“查询表 (look-up table)”获得，方便实际应用（见附录 A）。但在 $x \gg 3$ 时，$Q(x)$ 可以近似为：
+$$
+Q(x) \approx \frac{1}{x \sqrt{2\pi}} \exp \left( -\frac{x^2}{2} \right)\tag{4.32}
+$$
+
+### 联合高斯随机变量
+
+如果随机变量 $X$ 和 $Y$ 的联合概率密度函数为：
+$$
+\begin{array}{rcl}
+p_{XY}(x, y) & = & \displaystyle \frac{1}{2\pi \sigma_X \sigma_Y \sqrt{1 - \rho_{XY}^2}} \exp \left\{ -\frac{1}{2(1 - \rho_{XY}^2)} \left[ \frac{(x - m_X)^2}{\sigma_X^2} - 2\rho_{XY} \frac{(x - m_X)(y - m_Y)}{\sigma_X \sigma_Y} + \frac{(y - m_Y)^2}{\sigma_Y^2} \right] \right\}
+\end{array}\tag{4.33}
+$$
+则称 $X$ 和 $Y$ 为**联合高斯随机变量 (joint Gaussian random variable)**。其中 $m_X$ 和 $m_Y$ 分别为均值，$\sigma_X^2$ 和 $\sigma_Y^2$ 分别为方差，$\rho_{XY}$ 为相关系数。
+
+高斯随机变量具有以下有趣特性 [35]：
+
+1) 若 $X$ 和 $Y$ 是联合高斯随机变量，且 $a, b$ 为任意常数，则随机变量
+$$
+Z = aX + bY
+$$
+同样是一个高斯随机变量，其均值为：
+$$
+m_Z = am_X + bm_Y
+$$
+其方差为：
+$$
+\sigma_Z^2 = a^2 \sigma_X^2 + b^2 \sigma_Y^2 + 2ab \sigma_X \sigma_Y \rho_{XY}
+$$
+
+2) 若 $X$ 和 $Y$ 是联合高斯随机变量且不相关（即 $\rho_{XY} = 0$），则 $X$ 和 $Y$ 自动统计独立。
+
+3) 若 $X$ 是高斯随机变量，则其 $n$ 阶矩为：
+$$
+E[X^n] = \begin{cases} 1 \times 3 \times 5 \times \dots \times (n-1) \sigma_X^2, & n \text{ 为偶数} \\ 0, & n \text{ 为奇数} \end{cases}
+$$
+
+## 4.2.6 重要离散随机变量
+
+离散随机变量在许多涉及计数 (counting) 的实际应用中非常常见。在本节中，我们将重点介绍与硬盘驱动器信号处理系统相关的**伯努利随机变量 (Bernoulli random variable)** 和**二项随机变量 (binomial random variable)**。
+
+### 伯努利随机变量
+
+伯努利试验 (Bernoulli trial) 是一种随机试验，其结果只能分为两种互斥的情况：一种是符合要求的，称为“成功 (success)”，另一种是不符合要求的，称为“失败 (failure)”。例如，抛一次硬币，如果结果是“正面”则视为成功，如果结果是“反面”则视为失败；另一个例子是，将比特 0 和 1 从发送电路发送到接收电路，如果发生了错误，可以将其称为成功，如果没有错误发生，则称为失败。
+
+如果令 $X$ 为伯努利试验的结果，则 $X$ 是一个伯努利随机变量，其可能的取值为 $\Omega = \{ 0, 1 \}$。通常规定 $X = 1$ 代表成功，$X = 0$ 代表失败。若定义 $q$ 为成功的概率 $(0 \le q \le 1)$，则伯努利随机变量的概率质量函数定义为：
+
+$$
+\mathrm{Pr}\{ X = 0 \} = 1 - q \tag{4.34}
+$$
+
+$$
+\mathrm{Pr}\{ X = 1 \} = q \tag{4.35}
+$$
+
+当 $k \neq 0$ 且 $k \neq 1$ 时，$\mathrm{Pr}\{ X = k \} = 0$。对于伯努利随机变量，其均值为：
+
+$$
+E[X] = q \tag{4.36}
+$$
+
+其方差为：
+
+$$
+\operatorname{Var}(X) = q(1 - q) \tag{4.37}
+$$
+
+### 二项随机变量
+
+考虑一个独立重复进行 $n$ 次的随机试验，且每次试验的结果只能分为成功或失败。如果定义 $Y$ 为在 $n$ 次试验中事件 $A$（成功）发生的次数，那么随机变量 $Y$ 的所有可能取值为 $\{ 0, 1, \dots, n \}$。例如，$Y$ 可以是抛 $n$ 次硬币中出现“正面”的次数。
+
+由于每次试验的结果都可以看作一个伯努利随机变量 $X$，因此二项随机变量 (binomial random variable) $Y$ 定义为：
+
+$$
+Y = \sum_{i=1}^{n} X_i \tag{4.38}
+$$
+
+其中 $X_i \in \{ 0, 1 \}$ 是第 $i$ 次试验的结果。因此，二项随机变量 $Y$ 的概率质量函数为：
+
+$$
+\begin{array}{rcl}
+\mathrm{Pr}\{ Y = k \} & = & \binom{n}{k} q^k (1 - q)^{n-k} \\
+& = & \displaystyle \left( \frac{n!}{(n-k)! k!} \right) q^k (1 - q)^{n-k}
+\end{array} \tag{4.39}
+$$
+
+其中 $k = 0, 1, \dots, n$，且 $n! = n \times (n - 1) \times \dots \times 2 \times 1$。对于二项随机变量，其均值为：
+
+$$
+E[Y] = nq \tag{4.40}
+$$
+
+其方差为：
+
+$$
+\operatorname{Var}(Y) = nq(1 - q) \tag{4.41}
+$$
+
+通常，二项随机变量广泛应用于结果仅有两种可能的情况，例如：正面/反面，正确比特/错误比特，合格零件/缺陷零件等。
+
+**示例 4.6** 比特 0 和 1 通过一个有噪声的信道发送，导致接收端以 $0.00002$ 的概率做出错误判定。如果信息以数据块 (block) 形式发送，每个数据块包含 2000 个比特：
+a) 求一个数据块中至少有一个比特出错的概率。
+b) 如果一组信息包含 20 个数据块，求其中出错的数据块数量大于或等于 2 个的概率。
+
+**解**
+a) 令 $Y$ 表示一个数据块（2000 比特）中出错的比特数，$q = 0.00002$ 为接收端判定错误的概率。因此，一个数据块中 $Y \ge 1$ 的概率可通过方程 (4.39) 计算：
+
+$$
+\begin{array}{lll}
+\mathrm{Pr}\{ Y \ge 1 \} & = & 1 - \mathrm{Pr}\{ Y = 0 \} \\
+& = & 1 - \binom{2000}{0} (0.00002)^0 (1 - 0.00002)^{2000-0} \\
+& = & 1 - (1)(1)(0.99998)^{2000} \\
+& = & 0.03921
+\end{array}
+$$
+
+b) 令 $Z$ 表示 20 个数据块中发生错误的数据块数量，$p$ 为单个数据块出错的概率，根据 (a) 部分， $p = 0.03921$。因此，$Z \ge 2$ 的概率为：
+
+$$
+\begin{array}{rcl}
+\mathrm{Pr}\{ Z \ge 2 \} & = & 1 - \mathrm{Pr}\{ Z = 0 \} - \mathrm{Pr}\{ Z = 1 \} \\
+& = & 1 - \binom{20}{0} (0.03921)^0 (1 - 0.03921)^{20} - \binom{20}{1} (0.03921)^1 (1 - 0.03921)^{19} \\
+& = & 1 - (1)(1)(0.96079)^{20} - (20)(0.03921)(0.96079)^{19} \\
+& = & 0.184
+\end{array}
+$$
+
 
