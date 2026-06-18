@@ -669,4 +669,119 @@ $$
 $$
 该结果与示例 4.9 中的自相关函数 $R_X(\tau)$ 相等。因此，$X(t)$ 是一个宽平稳 (WSS) 随机过程，并且同时具有均值遍历性和自相关函数遍历性。
 
+## 4.3.5 功率谱密度 (Power Spectral Density)
+
+随机过程 $X(t)$ 通常被视为功率信号，其功率谱密度 (Power Spectral Density, PSD) 定义为：
+$$
+G_X(f) = \mathcal{F}[R_X(\tau)] = \int_{-\infty}^{\infty} R_X(\tau) e^{-j2\pi f\tau} d\tau \tag{4.51}
+$$
+也就是说，功率谱密度是自相关函数 $R_X(\tau)$ 的傅里叶变换。功率谱密度描述了信号功率在频域中的分布情况，从而可以知道信号在每个频率分量上的功率大小。
+
+对于实值随机过程 $X(t)$，其功率谱密度 $G_X(f)$ 具有以下重要性质：
+1) $G_X(f) \ge 0$ 且为实函数。
+2) $G_X(f) = G_X(-f)$（关于 $f=0$ 对称）。
+3) $G_X(f)$ 与 $R_X(\tau)$ 是一对傅里叶变换对。
+4) 总功率 $P_X = \int_{-\infty}^{\infty} G_X(f) df = R_X(0)$。
+
+**示例 4.11** 给定随机电报过程 (random telegraph process) $X(t)$ 的自相关函数为：
+$$
+R_X(\tau) = e^{-2\alpha|\tau|}
+$$
+其中 $\alpha$ 是信号的平均变化率。请计算 $X(t)$ 的功率谱密度。
+
+**解** $X(t)$ 的功率谱密度可由方程 (4.51) 求得：
+$$
+\begin{array}{lll}
+G_X(f) & = & \mathcal{F}[R_X(\tau)] \\
+& = & \int_{-\infty}^{0} e^{2\alpha\tau} e^{-j2\pi f\tau} d\tau + \int_{0}^{\infty} e^{-2\alpha\tau} e^{-j2\pi f\tau} d\tau \\
+& = & \frac{1}{2\alpha - j2\pi f} + \frac{1}{2\alpha + j2\pi f} \\
+& = & \frac{4\alpha}{4\alpha^2 + 4\pi^2 f^2}
+\end{array}
+$$
+
+**示例 4.12** 假设 $X(t)$ 是一个宽平稳 (WSS) 的白噪声过程 (white noise process)，其功率谱密度在频带 $-W < f < W$ 内为 $N_0/2$，其中 $W$ 为 $X(t)$ 的带宽。请计算其总功率和自相关函数。
+
+**解** $X(t)$ 的总功率可由下式计算：
+$$
+P_X = \int_{-W}^{W} \frac{N_0}{2} df = N_0 W
+$$
+$X(t)$ 的自相关函数是功率谱密度的傅里叶逆变换：
+$$
+\begin{array}{rcl}
+R_X(\tau) & = & \mathcal{F}^{-1}[G_X(f)] \\
+& = & \int_{-\infty}^{\infty} \frac{N_0}{2} e^{j2\pi f\tau} df \\
+& = & \frac{N_0}{2} \frac{e^{-j2\pi W\tau} - e^{j2\pi W\tau}}{-j2\pi\tau} \\
+& = & \frac{N_0}{2} \frac{\sin(2\pi W\tau)}{\pi\tau} \\
+& = & N_0 W \operatorname{sinc}(2W\tau)
+\end{array}
+$$
+其中 $\operatorname{sinc}(t) = \sin(\pi t) / (\pi t)$ 为 sinc 函数。
+
+在通信系统中，“白噪声 (white noise)”是指一个宽平稳随机过程 $W(t)$，其在整个频域 $(-\infty < f < \infty)$ 内的功率谱密度均为常数 $N_0/2$，即：
+$$
+G_W(f) = \frac{N_0}{2}
+$$
+对于所有频率 $f$ 均成立。其自相关函数为：
+$$
+R_W(\tau) = \frac{N_0}{2} \delta(\tau)
+$$
+其中 $\delta(\tau)$ 为狄拉克 $\delta$ 函数。
+
+## 4.3.6 随机过程与线性时不变 (LTI) 系统的关系
+
+考虑图 4.7 所示的线性时不变 (LTI) 系统。假设 $X(t)$ 是一个均值为 $m_X$、自相关函数为 $R_X(\tau)$ 且功率谱密度为 $G_X(f)$ 的宽平稳 (WSS) 随机过程。$h(t)$ 是该 LTI 系统的单位脉冲响应，其傅里叶变换为 $H(f)$。在实际应用中，我们需要知道输出随机过程 $Y(t)$ 的均值 $m_Y$、自相关函数 $R_Y(\tau)$ 和功率谱密度 $G_Y(f)$。这些量可以通过以下方式求得：
+
+![](images/chapter_4/622be16208c1cd107f8ae68720506d56de5de4c388e1308f3998ecfb856beeb1.jpg)
+图 4.7: 线性时不变系统
+
+$Y(t)$ 可以通过卷积求得：
+$$
+Y(t) = X(t) * h(t) = \int_{-\infty}^{\infty} X(t - \tau) h(\tau) d\tau
+$$
+
+根据上述关系，输出过程的均值 $m_Y$ 为：
+$$
+\begin{array}{lll}
+m_Y & = & E[Y(t)] \\
+& = & E \left[ \int_{-\infty}^{\infty} X(t - \tau) h(\tau) d\tau \right] \\
+& = & \int_{-\infty}^{\infty} E[X(t - \tau)] h(\tau) d\tau \\
+& = & m_X \int_{-\infty}^{\infty} h(\tau) d\tau \\
+& = & m_X H(0)
+\end{array} \tag{4.54}
+$$
+其中 $H(0)$ 是频率响应 $H(f)$ 在 $f = 0$ 时的值。
+
+同样地，自相关函数 $R_Y(\tau)$ 为：
+$$
+\begin{array}{lll}
+R_Y(\tau) & = & E[Y(t + \tau) Y(t)] \\
+& = & E \left[ \int_{-\infty}^{\infty} X(t + \tau - \alpha) h(\alpha) d\alpha \int_{-\infty}^{\infty} X(t - \beta) h(\beta) d\beta \right] \\
+& = & \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} h(\alpha) h(\beta) E[X(t + \tau - \alpha) X(t - \beta)] d\alpha d\beta \\
+& = & \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} h(\alpha) h(\beta) R_X(\tau - \alpha + \beta) d\alpha d\beta \\
+& = & \left\{ \int_{-\infty}^{\infty} h(\beta) R_X(\tau + \beta) d\beta \right\} * h(\tau) \\
+& = & h(-\tau) * R_X(\tau) * h(\tau)
+\end{array} \tag{4.55}
+$$
+
+功率谱密度 $G_Y(f)$ 是 $R_Y(\tau)$ 的傅里叶变换，其值为：
+$$
+\begin{array}{rcl}
+G_Y(f) & = & \int_{-\infty}^{\infty} R_Y(\tau) e^{-j2\pi f\tau} d\tau \\
+& = & H(f) H^*(f) G_X(f) \\
+& = & |H(f)|^2 G_X(f)
+\end{array} \tag{4.56}
+$$
+其中 $|H(f)|^2 = H(f) H^*(f)$，$H^*(f)$ 是 $H(f)$ 的共轭复数。方程 (4.56) 表明，LTI 系统的输出信号的功率谱密度等于输入信号的功率谱密度乘以系统频率响应幅值的平方。
+
+**示例 4.13** 假设随机过程 $Y(t) = X(t - d)$，其中 $d$ 为常数，表示时延量。$X(t)$ 是一个宽平稳 (WSS) 随机过程，其自相关函数为 $R_X(\tau)$，功率谱密度为 $G_X(f)$。请计算 $R_Y(\tau)$ 和 $G_Y(f)$。
+
+**解** 自相关函数 $R_Y(\tau)$ 为：
+$$
+R_Y(\tau) = E[Y(t + \tau) Y(t)] = E[X(t + \tau - d) X(t - d)] = R_X(\tau)
+$$
+功率谱密度 $G_Y(f)$ 为：
+$$
+G_Y(f) = \mathcal{F}\{R_Y(\tau)\} = \mathcal{F}\{R_X(\tau)\} = G_X(f)
+$$
+
 
