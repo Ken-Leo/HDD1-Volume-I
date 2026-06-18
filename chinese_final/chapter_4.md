@@ -624,3 +624,49 @@ R_Y(\tau) & = & E[Y(t + \tau) Y(t)] \\
 $$
 由于均值 $m_Y = 0$ 与时间无关，且自相关函数 $R_Y(\tau)$ 仅取决于时间差 $\tau$，因此 $Y(t)$ 同样是一个宽平稳随机过程。
 
+## 4.3.4 遍历过程 (Ergodic Process)
+
+从方程 (4.42) 和 (4.43) 可以看出，计算随机过程的均值和自相关函数需要知道一阶和二阶联合概率密度函数。但在实际应用中，通常很难获得具体任务所需的联合概率密度函数。
+
+对于一类特殊的随机过程，称为“遍历过程 (ergodic process)”，它具有一个特殊性质：其时间平均值（time average）等于其系综平均值（ensemble average）。这意味着，该过程的统计特性可以通过对单个样本函数求时间平均来确定。通常，任何强平稳 (SSS) 随机过程也具有遍历性（但反之不一定成立）[9]。然而，在通信系统的分析中，我们通常只关注满足宽平稳 (WSS) 条件下的均值和自相关函数。
+
+因此，如果随机过程 $X(t)$ 满足以下条件，则称其为“均值遍历 (ergodic in the mean)”：
+$$
+\langle X(t) \rangle = \lim_{T \to \infty} \frac{1}{2T} \int_{-T}^{T} X(t) \, dt = m_X \tag{4.49}
+$$
+其中 $\langle X(t) \rangle$ 等于系综平均值 $E[X(t)]$。类似地，如果随机过程 $X(t)$ 满足：
+$$
+\langle X(t + \tau) X(t) \rangle = \lim_{T \to \infty} \frac{1}{2T} \int_{-T}^{T} X(t + \tau) X(t) \, dt = R_X(\tau) \tag{4.50}
+$$
+且该值等于 $E[X(t + \tau) X(t)]$，则称该过程为“自相关函数遍历 (ergodic in the auto-correlation function)”。
+
+在实际中，测试一个随机过程是否具有遍历性非常困难。因此，在分析通信系统时，通常假设系统中的随机信号（如信息信号和噪声信号）具有均值遍历性和自相关函数遍历性，以简化数据分析。这是因为遍历过程的时间平均值等于系综平均值，且电气工程中的各种参数（如直流分量、平均功率等）都与遍历随机过程的矩相关 [9]。
+
+**示例 4.10** 参考示例 4.9，正弦波发生器产生如下正弦信号：
+$$
+X(t) = A \cos(2\pi f_0 t + \phi)
+$$
+其中 $A$ 为信号幅度，$f_0$ 为频率，$\phi$ 为均匀分布的随机相位。请计算该随机过程 $X(t)$ 的时间平均值和时间自相关函数。
+
+**解** 时间平均值计算如下：
+$$
+\begin{array}{lll}
+\langle X(t) \rangle & = & \lim_{T \to \infty} \frac{1}{2T} \int_{-T}^{T} X(t) \, dt \\
+& = & \lim_{T \to \infty} \frac{1}{2T} \int_{-T}^{T} \cos(2\pi f_0 t + \phi) \, dt \\
+& = & 0
+\end{array}
+$$
+这与示例 4.9 中的结果一致，其值等于均值 $m_X$。
+
+同样地，时间自相关函数计算如下：
+$$
+\begin{array}{rcl}
+\langle X(t + \tau) X(t) \rangle & = & \lim_{T \to \infty} \frac{1}{2T} \int_{-T}^{T} A^2 \cos(2\pi f_0 (t + \tau) + \phi) \cos(2\pi f_0 t + \phi) \, dt \\
+& = & \frac{A^2}{2} \lim_{T \to \infty} \frac{1}{2T} \int_{-T}^{T} \{ \cos(2\pi f_0 \tau) + \cos(2\pi f_0 (2t + \tau) + \phi) \} \, dt \\
+& = & \frac{A^2}{2} \cos(2\pi f_0 \tau) + \frac{A^2}{2} \underbrace{\lim_{T \to \infty} \frac{1}{2T} \int_{-T}^{T} \cos(2\pi f_0 (2t + \tau) + \phi) \, dt}_{= 0} \\
+& = & \frac{A^2}{2} \cos(2\pi f_0 \tau)
+\end{array}
+$$
+该结果与示例 4.9 中的自相关函数 $R_X(\tau)$ 相等。因此，$X(t)$ 是一个宽平稳 (WSS) 随机过程，并且同时具有均值遍历性和自相关函数遍历性。
+
+
