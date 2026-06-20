@@ -1034,6 +1034,76 @@ x(t) & = & 10 \cos(2000\pi t) \cos(8000\pi t) \\
 $$
 可以看出，信号 $x(t)$ 的最高频率为 5000 Hz。因此，最小采样频率（即奈奎斯特频率）为 $f_N = 2 f_{\text{max}} = 2 \times 5000 = 10000$ Hz。
 
+## 5.5.1 采样过程
+
+采样过程的工作原理可以通过以下数学方程来描述。对模拟信号 $x(t)$ 采样得到的采样数据 $\{x_k\}$ 可以写成信号 $x(t)$ 与 $\delta$ 脉冲串 (delta impulse train) 的乘积，即：
+
+$$
+\begin{array}{rcl}
+\{x_k\} & = & \displaystyle x(t) \times \sum_{m=-\infty}^{\infty} \delta(t - mT_s) \\
+& = & \displaystyle \sum_{m=-\infty}^{\infty} x(mT_s) \delta(t - mT_s)
+\end{array} \tag{5.88}
+$$
+
+由于 $\delta$ 脉冲串的傅里叶变换对为：
+
+$$
+\sum_{m=-\infty}^{\infty} \delta(t - mT_s) \Longleftrightarrow \frac{1}{T_s} \sum_{k=-\infty}^{\infty} \delta(f - kf_s) \tag{5.89}
+$$
+
+其中 $T_s = 1/f_s$。根据时域相乘等于频域卷积的原理，采样结果的频谱为：
+
+$$
+X(e^{j\omega}) = X(f) * \frac{1}{T_s} \sum_{k=-\infty}^{\infty} \delta(f - kf_s) \tag{5.90}
+$$
+
+$$
+= \frac{1}{T_s} \sum_{k=-\infty}^{\infty} X(f - kf_s) \tag{5.91}
+$$
+
+其中 $\omega = 2\pi f$ 为角频率。由方程 (5.91) 可知，采样结果的频谱 $X(e^{j\omega})$ 等于原信号频谱 $X(f)$ 经过 $1/T_s$ 加权后的周期性重复，重复间隔为 $f_s$ Hz。图 5.33 展示了模拟信号在时域和频域中的采样过程。
+
+## 5.5.2 模拟信号重建过程
+
+设定模拟信号 $x(t)$ 为带限信号，其傅里叶变换为 $X(f)$（如图 5.32 所示）。如果对信号 $x(t)$ 采用的采样频率满足 $f_s \ge 2 f_{\text{max}}$，则得到的采样数据 $\{x_k\}$ 的频谱为 $X(e^{j\omega})$（如图 5.34 所示）。
+
+模拟信号重建过程 (signal reconstruction process) 是指根据采样数据 $\{x_k\}$ 重建模拟信号 $\tilde{x}(t)$ 的过程，如图 5.35 所示。如果采样频率 $f_s \ge 2 f_{\text{max}}$，则可以通过将采样数据 $\{x_k\}$ 送入一个理想低通滤波器来实现 $\tilde{x}(t) = x(t)$，该滤波器的冲激响应为：
+
+$$
+h_{\text{LP}}(t) = \operatorname{sinc}\left(\frac{\pi t}{T_s}\right) = \frac{\sin(\pi t / T_s)}{\pi t / T_s} \tag{5.92}
+$$
+
+其傅里叶变换为：
+
+$$
+H_{\text{LP}}(f) = T_s \Pi(T_s f) = \begin{cases} T_s, & |f| \le \frac{f_s}{2} \\ 0, & \text{else} \end{cases} \tag{5.93}
+$$
+
+也就是说，所使用的理想低通滤波器的截止频率必须为：
+
+$$
+f_c = f_s / 2 \quad (\text{Hz}) \tag{5.94}
+$$
+
+模拟信号重建过程在频域中的工作原理如下：只有当 $\tilde{x}(t) = x(t)$ 时，$\tilde{x}(t)$ 的傅里叶变换才等于 $X(f)$（如图 5.32 所示）。因此，必须使图 5.34 中的频谱 $X(e^{j\omega})$ 在乘以 $H_{\text{LP}}(f)$ 后等于 $X(f)$，即：
+
+$$
+X(f) = X(e^{j\omega}) \times H_{\text{LP}}(f) \tag{5.95}
+$$
+
+根据方程 (5.93)，$H_{\text{LP}}(f) = T_s \Pi(T_s f)$，且其逆傅里叶变换为方程 (5.92) 中的 $h_{\text{LP}}(t) = \sin(\pi t / T_s) / (\pi t / T_s)$。基于频域乘法等于时域卷积的原理，方程 (5.95) 的逆傅里叶变换结果为：
+
+$$
+\begin{array}{rcl}
+x(t) & = & \displaystyle \sum_{m=-\infty}^{\infty} x(mT_s) \delta(t - mT_s) * \operatorname{sinc}(\pi t / T_s) \\
+& = & \displaystyle \sum_{m=-\infty}^{\infty} x(mT_s) \operatorname{sinc}\left(\frac{\pi (t - mT_s)}{T_s}\right) \tag{5.96}
+\end{array}
+$$
+
+方程 (5.96) 意味着将采样数据 $\{x_k\}$ 送入理想低通滤波器后，输出信号为 $x(t)$（如图 5.35 所示）。换言之，$x(t)$ 是由采样数据 $\{x_k\}$ 与理想低通滤波器的冲激响应进行卷积而得。方程 (5.96) 也被称为“奈奎斯特-香农插值公式 (Nyquist-Shannon interpolation formula)”，其物理含义是：每个采样点都被乘以一个 sinc 函数，且 sinc 函数的中心随采样时间移动，最后将所有这些信号叠加在一起，结果如图 5.29 所示。
+
+
+
 
 
 
