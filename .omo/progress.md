@@ -21,8 +21,8 @@
 
 - [ ] Chapter 5: Pending (RE-TRANSLATION)
   
-  - Completed: Introduction, 5.1.1, 5.1.2, 5.1.3, 5.1.4, 5.1.5, 5.1.6, 5.1.7, 5.2.1, 5.2.2, 5.2.3, 5.3.3
-  - Current: Completed (Section 5.3.3) - Identify next section
+   - Completed: Introduction, 5.1.1, 5.1.2, 5.1.3, 5.1.4, 5.1.5, 5.1.6, 5.1.7, 5.2.1, 5.2.2, 5.2.3, 5.3.3, 5.4, 5.4.1
+   - Current: Section 5.4.2
 
 - [ ] Chapter 6: Pending
   
