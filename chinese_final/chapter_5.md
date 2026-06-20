@@ -915,5 +915,37 @@ $$
 ![](images/chapter_5/be868a7b8032b0061e9a9f7ea2b61f9914496303980f352dd5c11597f21e4569.jpg)
 图 5.29: 多个相隔一个比特单元的理想奈奎斯特脉冲之和
 
+## 5.4.2 理论最小带宽
+
+信号的带宽 (bandwidth) 是指幅度谱不为零的正频率范围，单位为赫兹 (Hz: hertz)。例如，根据图 5.30 可知，基带信号 (baseband signal) 的带宽为 $W = f_{\text{max}}$，而带通信号 (bandpass signal) 的带宽为 $W = 2 f_{\text{max}}$。此外，带宽有多种定义方式，具体取决于给定的条件，例如零点到零点带宽 (null-to-null bandwidth)、3 dB 带宽 (3-dB bandwidth) 或半功率带宽 (half-power bandwidth) 等。因此，在确定信号带宽之前，必须明确所需的带宽定义类型，因为不同类型的带宽数值有所不同。
+
+![](images/chapter_5/b80fc6ef78084a975e4ed6b82f380d14e35657676bd5e6328561a7cab64788f3.jpg)
+图 5.30: (左) 基带信号 和 (右) 带通信号 的带宽
+
+本书仅考虑零点到零点带宽。考虑用于通信系统的脉冲信号（如图 5.27 所示），在理论上 [9]，以符号率 $R_s$ (symbols per second) 发送数据且无 ISI 时，所需的最小带宽 (minimum bandwidth) $W_0$ 为：
+
+$$
+W_0 = \frac{R_s}{2} \quad (\text{Hz}) \tag{5.79}
+$$
+
+其中 $R_s = 1/T$，$T$ 为符号周期 (symbol period)。此外，可以通过“带宽效率 (bandwidth efficiency)” $\eta$ 来衡量系统的带宽利用率，定义为：
+
+$$
+\eta = \frac{R_s}{W_0} \tag{5.80}
+$$
+
+单位为比特每秒每赫兹 (bits/second/hertz)。也就是说，$\eta$ 值越大，表明带宽利用率越高。例如，理想奈奎斯特脉冲的最小带宽为：
+
+$$
+W_0 = \frac{1}{2T} = \frac{R_s}{2} \quad (\text{Hz})
+$$
+
+其带宽效率为：
+
+$$
+\eta = \frac{R_s}{R_s/2} = 2 \quad (\text{bits/second/Hz})
+$$
+
+
 
 
