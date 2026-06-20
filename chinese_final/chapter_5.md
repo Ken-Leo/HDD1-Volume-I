@@ -946,6 +946,40 @@ $$
 \eta = \frac{R_s}{R_s/2} = 2 \quad (\text{bits/second/Hz})
 $$
 
+## 5.4.3 RC 脉冲
+
+在实际应用中，理想奈奎斯特脉冲无法通过任何电子电路实现，因为其频域信号 $G_I(f)$ 存在突变，且时域信号 $g_I(t)$ 的有效时间范围为 $-\infty < t < \infty$，如图 5.27 所示。为了解决这个问题，可以允许 $G_I(f)$ 缓慢变化，这种信号被称为“RC 脉冲 (raised-cosine pulse)” $G_{RC}(f)$，其定义为：
+
+$$
+G_{RC}(f) = \begin{cases} 1, & |f| < 2W_0 - W \\ \cos^2 \left( \frac{\pi}{4} \frac{|f| + W - 2W_0}{W - W_0} \right), & 2W_0 - W < |f| < W \\ 0, & |f| > W \end{cases} \tag{5.81}
+$$
+
+![](images/chapter_5/ac7a208d528af8f2691528a46d3eeebd57ec0e7d1c17e9e7cf77b267ac5f5107.jpg)
+图 5.31: RC 脉冲的傅里叶变换对
+
+其中 $W_0 = 1/(2T)$ 是奈奎斯特最小带宽，$W$ 是绝对带宽 (absolute bandwidth)，满足 $W_0 \le W \le 2W_0$；$W - W_0$ 是超额带宽 (excess bandwidth)，而 $r = (W - W_0)/W_0$ 是滚降系数 (roll-off factor)，取值范围为 $0 \le r \le 1$。
+
+图 5.31(上) 展示了 $G_{RC}(f)$ 的波形。可以看出，当 $r = 0$ 时，其频谱为与理想奈奎斯特脉冲相同的矩形。此外，$G_{RC}(f)$ 的逆傅里叶变换结果为：
+
+$$
+g_{RC}(t) = 2 W_0 \operatorname{sinc}(2 W_0 t) \frac{\cos[2 \pi (W - W_0) t]}{1 - [4 (W - W_0) t]^2} \tag{5.82}
+$$
+
+其波形如图 5.31(下) 所示。对于 RC 脉冲，其绝对带宽为：
+
+$$
+W = \frac{R_s}{2} (1 + r) \quad (\text{Hz}) \tag{5.83}
+$$
+
+示例 5.11：一个电话系统传输带宽为 3500 Hz 的语音信号。若规定二进制信号（由语音信号转换为 PCM 序列后得到）采用 RC 脉冲形状且滚降系数 $r = 0.25$，求其数据传输率。
+
+解：数据传输率 $R_s$ 可由方程 (5.83) 求得，即：
+
+$$
+R_s = \frac{1}{T} = \frac{2W}{1 + r} = \frac{2 (3500)}{1 + 0.25} = 5600 \quad \text{bps}
+$$
+
+
 
 
 
