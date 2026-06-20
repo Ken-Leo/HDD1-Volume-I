@@ -21,8 +21,8 @@
 
 - [ ] Chapter 5: Pending (RE-TRANSLATION)
   
-   - Completed: Introduction, 5.1.1, 5.1.2, 5.1.3, 5.1.4, 5.1.5, 5.1.6, 5.1.7, 5.2.1, 5.2.2, 5.2.3, 5.3.3, 5.4, 5.4.1, 5.4.2, 5.4.3, 5.4.4, 5.5, 5.5.1, 5.5.2
-   - Current: Section 5.5.3
+    - Completed: Introduction, 5.1.1, 5.1.2, 5.1.3, 5.1.4, 5.1.5, 5.1.6, 5.1.7, 5.2.1, 5.2.2, 5.2.3, 5.3.3, 5.4, 5.4.1, 5.4.2, 5.4.3, 5.4.4, 5.5, 5.5.1, 5.5.2, 5.5.3
+    - Current: Section 5.6
 
 - [ ] Chapter 6: Pending
   
@@ -51,5 +51,5 @@ To prevent data loss and ensure grounding, EVERY section must follow this strict
 3. **High-Fidelity Translation**: Translate to Chinese. Preserve ALL LaTeX equations.
 4. **Safe Append**: Use `edit` tool. **FORBIDDEN**: Do not use `write` on existing files.
 5. **Progress Sync**: Move section to `Completed` in this file, update `Current` pointer.
-6. **Verifiable Commit**: `git add` and `git commit` immediately.
+6 a. **Verifiable Commit**: `git add` and `git commit` immediately.
 7. **Final Verification**: Read target file end to confirm successful write.
