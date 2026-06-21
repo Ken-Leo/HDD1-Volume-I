@@ -24,10 +24,7 @@
   - Completed: Introduction, 5.1.1, 5.1.2, 5.1.3, 5.1.4, 5.1.5, 5.1.6, 5.1.7, 5.2.1, 5.2.2, 5.2.3, 5.3.3, 5.4, 5.4.1, 5.4.2, 5.4.3, 5.4.4, 5.5, 5.5.1, 5.5.2, 5.5.3, 5.6, 5.6.1, 5.6.2, 5.6.3, 5.6.4, 5.7, 5.8, 5.9
   - Current: Chapter 6
 
-- [ ] Chapter 6: Pending
-  
-  - Completed: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6
-  - Current: Section 6.7
+- [x] Chapter 6: Completed
 
 - [ ] Appendices: Pending
   
