@@ -26,8 +26,8 @@
 
 - [ ] Chapter 6: Pending
   
-  - Completed: nothing
-  - Current: empty
+  - Completed: 6.1
+  - Current: Section 6.2
 
 - [ ] Appendices: Pending
   
@@ -36,7 +36,7 @@
 
 ## Remaining Tasks
 
-- [ ] Translate Chapter 5
+- [x] Translate Chapter 5
 - [ ] Translate Chapter 6
 - [ ] Translate Appendices
 - [ ] Refine README
