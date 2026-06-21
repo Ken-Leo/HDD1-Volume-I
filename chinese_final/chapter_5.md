@@ -1251,3 +1251,158 @@ $$
 对比方程 (5.108) 和 (5.112) 可以发现，方程 (5.112) 中的 DFE 均衡器输出 $y_k$ 不含 ISI 分量，且噪声没有被放大。
 
 通常，DFE 均衡器的性能优于零强迫均衡器，但 DFE 均衡器的一个主要缺点是可能会导致“误差传播（error propagation）”问题。当对于某个 $k$ 值出现 $a_k \neq \hat{a}_k$ 时，即在时间 $k$ 的假设 $a_k = \hat{a}_k$ 不成立，那么当 $i > k$ 时，检测器的输出 $\hat{a}_i$ 都有可能出错。因此，在所有应用中都应尽量避免误差传播问题。
+
+## 5.6.3 MMSE 均衡器
+
+考虑图 5.38 中的信道模型。MMSE（最小均方误差）均衡器旨在权衡零强 fclose (zero-forcing) 均衡器和 DFE 均衡器的优缺点。MMSE 均衡器的设计目标是使接收到的数据 $y_k$ 与期望数据 $a_k$ 之间的均方误差最小化，或者可以说，MMSE 均衡器使以下值最小化：
+
+$$
+\mathrm{MSE} = E \left[ \left( y_k - a_{k-d} \right)^2 \right] \tag{5.113}
+$$
+
+其中 $E[\cdot]$ 是期望运算符，$d$ 是由均衡器引起的延迟量，并假设 $\hat{a}_{k-d} = a_{k-d}$。
+
+由于均衡器引起的延迟量 $d$ 已被纳入方程 (5.113) 中，为了方便说明 MMSE 均衡器的设计方法，定义一个新的变量来表示均衡器的每个抽头系数，即 $c_k = f_{k-K}$。因此，定义均衡器为：
+
+$$
+\mathbf{c} = \begin{bmatrix} c_0 \\ c_1 \\ c_2 \\ \vdots \\ c_{N-1} \end{bmatrix} = \begin{bmatrix} f_{-K} \\ \vdots \\ f_0 \\ \vdots \\ f_K \end{bmatrix}
+$$
+
+其中 $N = 2K + 1$ 是均衡器的总抽头数，且向量 $\mathbf{\bar{s}} = [s_k, s_{k-1}, s_{k-2}, \dots, s_{k-N+1}]^{\mathrm{T}}$。因此，均衡器在时间 $k$ 的输出数据为：
+
+$$
+y_k = \mathbf{c}^{\mathrm{T}} \mathbf{s} = \mathbf{s}^{\mathrm{T}} \mathbf{c} \tag{5.114}
+$$
+
+考虑系统中所有传输数据均为实数的情况，方程 (5.113) 可以重新整理为：
+
+$$
+\mathrm{MSE} = E[y_k^2] - 2E[y_k a_{k-d}] + E[a_{k-d}^2] \tag{5.115}
+$$
+
+将方程 (5.114) 中的 $y_k$ 代入方程 (5.113) 中，可得：
+
+$$
+\begin{array}{lll}
+\mathrm{MSE} & = & E[\mathbf{c}^{\mathrm{T}} \mathbf{s} \mathbf{s}^{\mathrm{T}} \mathbf{c}] - 2E[a_{k-d} \mathbf{c}^{\mathrm{T}} \mathbf{s}] + E_a \\
+& = & \mathbf{c}^{\mathrm{T}} E[\mathbf{s} \mathbf{s}^{\mathrm{T}}] \mathbf{c} - 2 \mathbf{c}^{\mathrm{T}} E[a_{k-d} \mathbf{s}] + E_a \\
+& = & \mathbf{c}^{\mathrm{T}} \mathbf{R}_{ss} \mathbf{c} - 2 \mathbf{c}^{\mathrm{T}} \mathbf{p} + E_a \\
+& = & (\mathbf{c} - \mathbf{R}_{ss}^{-1} \mathbf{p})^{\mathrm{T}} \mathbf{R}_{ss} (\mathbf{c} - \mathbf{R}_{ss}^{-1} \mathbf{p}) - \mathbf{p}^{\mathrm{T}} \mathbf{R}_{ss}^{-1} \mathbf{p} + E_a
+\end{array} \tag{5.116}
+$$
+
+当 $\mathbf{c}$ 为确定值时，$E_a = E[a_{k-d}^2] = E[a_k^2]$ 是输入比特数据 $a_k$ 的能量。数据 $\{s_k\}$ 的自相关矩阵为：
+
+$$
+\mathbf{R}_{ss} = E[\mathbf{s} \mathbf{s}^{\mathrm{T}}] \tag{5.118}
+$$
+
+而 $a_k$ 与 $\{s_k\}$ 之间的互相关向量为：
+
+$$
+\mathbf{p} = E[a_{k-d} \mathbf{s}] \tag{5.119}
+$$
+
+MMSE 均衡器的设计目标是使方程 (5.117) [注：原文如此，应指 (5.116)] 中的 MSE 值最小。由于方程 (5.118) 中的矩阵 $\mathbf{R}_{ss}$ 具有对称属性，即：
+
+$$
+\mathbf{R}_{ss}^{\mathrm{T}} = \mathbf{R}_{ss} \tag{5.120}
+$$
+
+且基于以下事实：
+
+$$
+\mathbf{b}^{\mathrm{T}} \mathbf{R}_{ss} \mathbf{b} \geq 0 \tag{5.121}
+$$
+
+对于任意向量 $\mathbf{b}$ [37]。因此，方程 (5.117) [注：原文如此，应指 (5.116)] 在以下条件时取得最小值：
+
+$$
+\mathbf{c} - \mathbf{R}_{ss}^{-1} \mathbf{p} = 0 \tag{5.122}
+$$
+
+因此，MMSE 均衡器的系数可由下式求得：
+
+$$
+\mathbf{c}_{\mathrm{MMSE}} = \mathbf{R}_{ss}^{-1} \mathbf{p} \tag{5.123}
+$$
+
+此时产生的最小 MSE 值为：
+
+$$
+\mathrm{MSE}_{\min} = E_a - \mathbf{p}^{\mathrm{T}} \mathbf{R}_{ss}^{-1} \mathbf{p} \tag{5.124}
+$$
+
+关于 MMSE 均衡器设计的一个观察是：所得均衡器是非自适应的（not adaptive），且在计算矩阵 $\mathbf{R}_{ss}$ 和向量 $\mathbf{p}$ 时，不需要使用实际的数据 $\{a_k\}$ 和 $\{s_k\}$，而仅需要 $\{a_k\}$ 和 $\{s_k\}$ 的统计特性，具体将在下一节中详细说明。
+
+**在给定信道 $H(D)$ 时求解 $\mathbf{R}_{ss}$ 和 $\mathbf{p}$**
+
+考虑图 5.38 中的信道模型。若给定信道 $H(D)$ 为：
+
+$$
+H(D) = \sum_{k=0}^{\nu} h_k D^k \tag{5.125}
+$$
+
+则接收端接收到的数据 $s_k$ 可以用矩阵形式表示为：
+
+$$
+\mathbf{s} = \mathbf{H} \mathbf{a} + \mathbf{n} \tag{5.127}
+$$
+
+其中 $\mathbf{H}$ 为信道矩阵，$\mathbf{a}$ 为发送数据向量，$\mathbf{n}$ 为噪声向量。
+
+矩阵 $\mathbf{R}_{ss}$ 可通过将方程 (5.127) 中的 $\mathbf{s}$ 代入方程 (5.118) 得到：
+
+$$
+\begin{array}{rcl}
+\mathbf{R}_{ss} & = & E[\mathbf{s} \mathbf{s}^{\mathrm{T}}] \\
+& = & E[(\mathbf{H} \mathbf{a} + \mathbf{n})(\mathbf{H} \mathbf{a} + \mathbf{n})^{\mathrm{T}}] \\
+& = & \mathbf{H} E[\mathbf{a} \mathbf{a}^{\mathrm{T}}] \mathbf{H}^{\mathrm{T}} + E[\mathbf{n} \mathbf{n}^{\mathrm{T}}]
+\end{array} \tag{5.128}
+$$
+
+由于 $E[\mathbf{an}^{\mathrm{T}}] = E[\mathbf{na}^{\mathrm{T}}] = 0$（因为数据 $a_k$ 与噪声 $n_k$ 不相关），且矩阵 $E[\mathbf{aa}^{\mathrm{T}}]$ 和 $E[\mathbf{nn}^{\mathrm{T}}]$ 的第 $i$ 行第 $j$ 列元素分别为：
+
+$$
+E[\mathbf{a} \mathbf{a}^{\mathrm{T}}]_{(i,j)} = E[a_{k-i} a_{k-j}] = \begin{cases} 0, & i \neq j \\ E_a, & i = j \end{cases}
+$$
+
+以及
+
+$$
+E[\mathbf{n} \mathbf{n}^{\mathrm{T}}]_{(i,j)} = E[n_{k-i} n_{k-j}] = \begin{cases} 0, & i \neq j \\ \sigma^2, & i = j \end{cases}
+$$
+
+因此，方程 (5.128) 可以重新整理为：
+
+$$
+\mathbf{R}_{ss} = E_a \mathbf{H} \mathbf{H}^{\mathrm{T}} + \sigma^2 \mathbf{I} \tag{5.129}
+$$
+
+其中 $\mathbf{I}$ 是一个 $N \times N$ 的单位矩阵（identity matrix）。
+
+同理，向量 $\mathbf{p}$ 也可以通过将方程 (5.127) 中的 $\mathbf{s}$ 代入方程 (5.119) 得到：
+
+$$
+\mathbf{p} = E[a_{k-d} (\mathbf{H} \mathbf{a} + \mathbf{n})] \tag{5.130}
+$$
+
+由于 $E[a_{k-d} \mathbf{n}] = 0$，且
+
+$$
+E[a_{k-d} \mathbf{a}] = E \begin{bmatrix} E[a_{k-d} a_k] \\ E[a_{k-d} a_{k-1}] \\ \vdots \\ E[a_{k-d} a_{k-d}] \\ \vdots \\ E[a_{k-d} a_{k-N+1}] \end{bmatrix} = E_a \mathbf{e}_d
+$$
+
+其中 $\mathbf{e}_d$ 是一个包含 $N$ 个元素的列向量，其元素定义如下：
+
+$$
+\mathbf{e}_d = [0, \dots, 0, \underbrace{1}_{(d+1)\text{-th}}, 0, \dots, 0]^{\mathrm{T}}
+$$
+
+即 $\mathbf{e}_d$ 中除第 $d+1$ 个元素为 1 以外，其余所有元素均为 0。因此，方程 (5.130) 可以整理为：
+
+$$
+\mathbf{p} = E_a \mathbf{H} \mathbf{e}_d \tag{5.131}
+$$
+
+在获得矩阵 $\mathbf{R}_{ss}$ 和向量 $\mathbf{p}$ 后，将其代入方程 (5.123)，即可求得 MMSE 均衡器的每个抽头系数。通常，MMSE 均衡器的性能优于零强迫均衡器和 DFE 均衡器，尤其是在噪声和 ISI 严重的情况下。关于用于硬盘驱动器信号处理系统的 MMSE 均衡器设计的更多细节，可参考书籍《数字数据存储信号处理 第 2 卷：读写信道设计》第 3 章 [6]。
