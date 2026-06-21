@@ -1406,3 +1406,305 @@ $$
 $$
 
 在获得矩阵 $\mathbf{R}_{ss}$ 和向量 $\mathbf{p}$ 后，将其代入方程 (5.123)，即可求得 MMSE 均衡器的每个抽头系数。通常，MMSE 均衡器的性能优于零强迫均衡器和 DFE 均衡器，尤其是在噪声和 ISI 严重的情况下。关于用于硬盘驱动器信号处理系统的 MMSE 均衡器设计的更多细节，可参考书籍《数字数据存储信号处理 第 2 卷：读写信道设计》第 3 章 [6]。
+
+## 5.6.4 自适应均衡器
+
+在实际应用中，很难准确获知信道参数 $H$ 和噪声功率 $\sigma^2$。因此，实际使用的均衡器通常在接收新数据的过程中，实时调整均衡器的每个抽头系数。这种工作模式的均衡器被称为“自适应均衡器（adaptive equalizer）”。自适应均衡器的结构与 TDL 均衡器或横向滤波器（如图 5.39 所示）相同，但其内部引入了用于调整系数的算法，以补偿信道特性的不确定性。
+
+### 最速下降法 (Steepest Descent Algorithm)
+
+设 $f(x)$ 为一个关于独立变量 $x$ 的实值函数，其图像如图 5.42 所示。最速下降法（或称梯度算法）用于寻找使函数 $f(x)$ 达到最小值的 $x$ 值，其工作步骤如下：
+
+1) 设置初始值 $x = x_0$，其中 $x_0$ 为任意常数。
+
+2) 对于 $k = 1$ 到 $L$：
+   $$ 2.1) \ x_{k+1} = x_k - \mu f'(x_k) $$
+
+其中 $L$ 是迭代次数，$\mu$ 是步长（step size），取值范围为 $0 < \mu < 1$，而 $f'(x_k)$ 是函数 $f(x)$ 在 $x = x_k$ 处的导数。通常，最速下降法的性能取决于参数 $\mu$。也就是说：
+
+- 若 $\mu$ 过小，将需要较长时间才能得到所需的 $x$ 值，即收敛速度（convergence rate）较慢。
+- 若 $\mu$ 过大，可能会导致发散（divergence），从而无法获得所需的 $x$ 值。
+
+**示例 5.14**：给定函数
+$$ f(x) = 3 x e^{x^2} + \frac{3 x}{2 + x^2} - 5 $$
+使用最速下降法计算 $k=2$ 时的 $x_k$ 值，已知 $x_0 = 0$ 且 $\mu = 0.2$。
+
+**解**：对于给定的函数 $f(x)$，其导数为：
+$$ f'(x) = \frac{df(x)}{dx} = (3x)e^{x^2}(2x) + e^{x^2}(3) + \frac{(2+x^2)(3) - (3x)(2x)}{(2+x^2)^2} $$
+
+根据最速下降法，当 $k=0, 1, 2$ 时，$x_k$ 的值为：
+$$ x_0 = 0 $$
+$$ x_1 = x_0 - \mu f'(x_0) = 0 - (0.2) f'(0) = -0.9 $$
+$$ x_2 = x_1 - \mu f'(x_1) = (-0.9) - (0.2) f'(-0.9) = -4.524 $$
+
+因此，得到 $x_2 = -4.524$，证毕。
+
+### N 维最速下降法
+
+如果 $f$ 是多个独立变量的函数，即 $f(\mathbf{x})$，其中 $\mathbf{x} = [x_1, x_2, \dots, x_N]^{\mathrm{T}}$，则最速下降法仍可用于寻找使函数 $f(\mathbf{x})$ 最小的向量 $\mathbf{x}$，步骤如下：
+
+1) 设置初始值 $\mathbf{x} = \mathbf{x}_0$，其中 $\mathbf{x}_0$ 为任意常数向量。
+
+2) 对于 $k = 1$ 到 $L$：
+   $$ 2.1) \ \mathbf{x}_{k+1} = \mathbf{x}_k - \mu \nabla f(\mathbf{x}_k) $$
+
+其中 $\nabla$ 是梯度运算符（gradient operator），定义为：
+$$ \nabla f(\mathbf{x}) = \left[ \begin{array}{c} \frac{\partial f(\mathbf{x})}{\partial x_1} \\ \frac{\partial f(\mathbf{x})}{\partial x_2} \\ \vdots \\ \frac{\partial f(\mathbf{x})}{\partial x_N} \end{array} \right] $$
+
+同样地，N 维最速下降法的性能也取决于参数 $\mu$。
+
+**示例 5.15**：给定
+$$ f(x, y) = x^2 - y^2 - 3x + 3y + 2xy $$
+使用 N 维最速下降法计算 $k=2$ 时的 $x_k$ 和 $y_k$ 值，已知 $x_0 = 0, y_0 = 0$，且 $\mu = 0.1$。
+
+**解**：对于给定的 $f(x, y)$，其梯度为：
+$$ \nabla f(x, y) = \left[ \begin{array}{l} \frac{\partial f(x, y)}{\partial x} \\ \frac{\partial f(x, y)}{\partial y} \end{array} \right] = \left[ \begin{array}{l} 2x - 3 + 2y \\ -2y + 3 + 2x \end{array} \right] $$
+
+根据 N 维最速下降法，更新 $x_k$ 和 $y_k$ 的方程为：
+$$ x_{k+1} = x_k - \mu \frac{\partial f(x_k, y_k)}{\partial x} = x_k - \mu (2x_k - 3 + 2y_k) $$
+$$ y_{k+1} = y_k - \mu \frac{\partial f(x_k, y_k)}{\partial y} = y_k - \mu (-2y_k + 3 + 2x_k) $$
+
+写成矩阵形式为：
+$$ \underbrace{\left[ \begin{array}{l} x_{k+1} \\ y_{k+1} \end{array} \right]}_{\mathbf{x}_{k+1}} = \underbrace{\left[ \begin{array}{l} x_k \\ y_k \end{array} \right]}_{\mathbf{x}_k} - \mu \underbrace{\left[ \begin{array}{l} 2x_k - 3 + 2y_k \\ -2y_k + 3 + 2x_k \end{array} \right]}_{\nabla f(\mathbf{x}_k)} $$
+
+因此，当 $k=0, 1, 2$ 时的 $x_k$ 和 $y_k$ 值为：
+
+| $k$ | $x_k$ | $y_k$ |
+|---|---|---|
+| 0 | 0 | 0 |
+| 1 | $0 - (0.1)(-3) = 0.3$ | $0 - (0.1)(3) = -0.3$ |
+| 2 | $(0.3) - (0.1)[2(0.3) - 3 + 2(-0.3)] = 0.6$ | $-0.3 - (0.1)[-2(-0.3) + 3 + 2(0.3)] = -0.72$ |
+
+因此，得到 $x_2 = 0.6$ 且 $y_2 = -0.72$，证毕。
+
+### 与 MMSE 均衡器的关系
+
+根据 5.6.3 节中 MMSE 均衡器的设计方法，MMSE 均衡器的每个抽头系数旨在使方程 (5.116) 中的 MSE 最小。因此，可以认为该目标函数（cost function）为：
+
+$$ f(\mathbf{c}) = \mathrm{MSE} = \mathbf{c}^{\mathrm{T}} \mathbf{R}_{ss} \mathbf{c} - 2 \mathbf{c}^{\mathrm{T}} \mathbf{p} + E_a \tag{5.132} $$
+
+该函数 $f(\mathbf{c})$ 的梯度为：
+
+$$ \nabla f(\mathbf{c}) = 2 \mathbf{R}_{ss} \mathbf{c} - 2 \mathbf{p} \tag{5.133} $$
+
+假设 $f(\mathbf{c})$ 是一个具有唯一最小值的二次函数（quadratic function），则最优系数 $\mathbf{c}_{\mathrm{opt}}$ 可通过令 $\nabla f(\mathbf{c}) = 0$ 求得：
+
+$$ \mathbf{c}_{\mathrm{opt}} = \mathbf{R}_{ss}^{-1} \mathbf{p} \tag{5.134} $$
+
+这与方程 (5.123) 中的 $\mathbf{c}_{\mathrm{MMSE}}$ 相同。因此，通过最速下降法最小化 $\nabla f(\mathbf{c})$ 来寻找均衡器系数，可以保证 $\mathbf{c}_{\mathrm{opt}}$ 在 $\mu$ 选择合适的情况下收敛至 $\mathbf{c}_{\mathrm{MMSE}}$。
+
+### LMS 算法
+
+根据最速下降法，为了使方程 (5.132) 中的 $f(\mathbf{c})$ 最小化，可以使用以下更新方程：
+
+$$ \mathbf{c}_{k+1} = \mathbf{c}_k - \frac{\mu}{2} \nabla f(\mathbf{c}_k) \tag{5.135} $$
+
+其中 $\nabla f(\mathbf{c}_k)$ 可通过将方程 (5.118) 的 $\mathbf{R}_{ss}$ 和方程 (5.119) 的 $\mathbf{p}$ 代入方程 (5.133) 得到：
+
+$$ \begin{array}{lll} \nabla f(\mathbf{c}_k) & = & 2 (E[\mathbf{s}_k \mathbf{s}_k^{\mathrm{T}}] \mathbf{c}_k - E[\hat{a}_{k-d} \mathbf{s}_k]) \\ & = & 2 E[\mathbf{s}_k (\mathbf{s}_k^{\mathrm{T}} \mathbf{c}_k - \hat{a}_{k-d})] \\ & = & 2 E[\mathbf{s}_k (y_k - \hat{a}_{k-d})] \\ & = & 2 E[\mathbf{s}_k e_k] \end{array} \tag{5.136} $$
+
+其中 $y_k = \mathbf{s}_k^{\mathrm{T}} \mathbf{c}_k$，且 $e_k = y_k - \hat{a}_{k-d}$ 是基于图 5.38 信道模型的误差。将 $\nabla f(\mathbf{c}_k)$ 代入方程 (5.135) 得：
+
+$$ \mathbf{c}_{k+1} = \mathbf{c}_k - \mu E[e_k \mathbf{s}_k] \tag{5.137} $$
+
+在实际应用中，直接计算期望值 $E[e_k \mathbf{s}_k]$ 非常困难。一种解决方法是使用样本平均值（sample mean）进行估计 [35]：
+
+$$ \hat{E}[e_k \mathbf{s}_k] = \frac{1}{L_a} \sum_{i=0}^{L_a-1} e_{k-i} \mathbf{s}_{k-i} \tag{5.138} $$
+
+其中 $L_a$ 为数据序列 $\{s_k\}$ 的总长度。将此估计值应用于最速下降法，方程 (5.137) 可改写为：
+
+$$ \mathbf{c}_{k+1} = \mathbf{c}_k - \frac{\mu}{L_a} \sum_{i=0}^{L_a-1} e_{k-i} \mathbf{s}_{k-i} \tag{5.139} $$
+
+此外，如果仅使用单点样本估计（即 $L_a = 1$），则有：
+
+$$ \hat{E}[e_k \mathbf{s}_k] = e_k \mathbf{s}_k \tag{5.140} $$
+
+因此，均衡器系数的更新方程变为：
+
+$$ \mathbf{c}_{k+1} = \mathbf{c}_k - \mu \{ e_k \mathbf{s}_k \} \tag{5.141} $$
+
+该方程通常被称为“最小均方（LMS: least mean square）算法”或简称“LMS 算法”。该算法在各种应用中非常流行，主要因为其具有以下优点：
+
+1) LMS 算法无需事先知道输入数据和信道的特性即可运行。
+2) 只要 $\mu$ 足够小，即可保证 LMS 算法得到的 $\mathbf{c}$ 值最终会收敛于 $\mathbf{c}_{\mathrm{MMSE}}$（尽管可能需要较长时间）。
+3) 该算法具有良好的鲁棒性、稳定性，且易于实现为电子电路。
+
+综上所述，若基于图 5.38 的系统模型使用 LMS 算法实现自适应均衡器，其工作步骤如下：
+
+1) 初始化 $\mathbf{c}_0$ 为任意向量。
+2) 对于 $k = 1$ 到 $L$（其中 $L \leq L_a$）：
+   2.1) 计算误差 $e_k = y_k - \hat{a}_{k-d}$。
+   2.2) 更新均衡器系数 $\mathbf{c}_{k+1} = \mathbf{c}_k - \mu \{ e_k \mathbf{s}_k \}$。
+
+关于 LMS 算法的其他细节，如收敛条件等，可参考资料 [35]。
+
+### 自适应均衡器的运行状态
+
+自适应均衡器面临的一个主要问题是：在系数更新过程的初始阶段，系统并不知道一个理想的 $\mathbf{c}_0$ 应该是怎样的。因此，如果用于计算误差 $e_k$ 的 $\hat{a}_{k-d}$ 数据不可靠，LMS 算法可能会计算出错误的均衡器系数。相反，如果 $\hat{a}_{k-d}$ 是可靠的，LMS 算法将高效运行。因此，在实际应用中，传输的数据通常分为两个主要部分：
+
+1) 第一部分是**测试信号**，称为**前导码（preamble）**。发送端和接收端均预先已知前导码的特征。通常前导码仅包含少量比特。
+2) 第二部分是**实际数据（real data）**。这部分数据通常具有随机特性，包含大量比特（例如在硬盘驱动器中，这部分数据约为 4096 比特）。
+
+因此，自适应均衡器根据数据的特性分为两种运行模式：
+
+1) **捕获模式（acquisition mode）** 或 **训练模式（training mode）**：处于初始阶段，自适应均衡器利用前导码来计算合适的均衡器系数。由于已知前导码的具体内容，均衡器可以使用较大的 $\mu$（步长），以便尽可能快地获得合适的系数。
+2) **跟踪模式（tracking mode）**：在此阶段，自适应均衡器利用实际数据来调整均衡器系数。由于实际数据具有随机性，均衡器无法保证 $\hat{a}_{k-d}$ 始终 100% 可靠。因此，均衡器应使用较小的 $\mu$ 来调整系数，以防止产生较大误差。
+
+![](images/chapter_5/45a6dcdab77c11a392cac6029483338cc1b8efd8afd970bd2b23f3de13f591a3.jpg)
+$\mu = 0.01$ 以及 (b) $\mu = 0.001$
+
+考虑图 5.38 中的信道模型，设定 $H(D) = 1 - D^2$，并采用具有 11 个抽头的自适应均衡器（基于 LMS 算法），目标是使均衡器输出尽可能接近 $a_k$。图 5.43 显示了在步长 $\mu = 0.01$ 和 $\mu = 0.001$ 时，11 个抽头系数的变化情况。条件为：输入数据 $a_k \in \{\pm 1\}$ 共 4000 比特，运行在 $E_b/N_0 = 9\mathrm{dB}$ 环境下，且假设所有输入数据均为前导码（即均衡器仅在捕获模式下运行）。从图中可以看出，当使用较大的 $\mu$ 时，各抽头系数的变化较为剧烈（在跟踪模式下容易导致出错），但收敛速度较快（fast convergence）。相反，当 $\mu$ 较小时，抽头系数变化缓慢（在跟踪模式下产生的误差较少），但收敛速度较慢（slow convergence）。因此，在实际应用中，自适应均衡器在捕获模式下使用较大的 $\mu$，而在跟踪模式下使用较小的 $\mu$。
+
+![](images/chapter_5/9e62d6c75c5cab67f8d29ff419d6e820ffa879138f300d502c5be92da366f73f.jpg)
+图 5.44: 硬盘驱动器信号处理系统的模型
+
+## 5.6.4 自适应均衡器
+
+在实际应用中，很难准确获知信道参数 $H$ 和噪声功率 $\sigma^2$。因此，实际使用的均衡器通常在接收新数据的过程中，实时调整均衡器的每个抽头系数。这种工作模式的均衡器被称为“自适应均衡器（adaptive equalizer）”。自适应均衡器的结构与 TDL 均衡器或横向滤波器（如图 5.39 所示）相同，但其内部引入了用于调整系数的算法，以补偿信道特性的不确定性。
+
+### 最速下降法 (Steepest Descent Algorithm)
+
+设 $f(x)$ 为一个关于独立变量 $x$ 的实值函数，其图像如图 5.42 所示。最速下降法（或称梯度算法）用于寻找使函数 $f(x)$ 达到最小值的 $x$ 值，其工作步骤如下：
+
+1) 设置初始值 $x = x_0$，其中 $x_0$ 为任意常数。
+
+2) 对于 $k = 1$ 到 $L$：
+   $$ 2.1) \ x_{k+1} = x_k - \mu f'(x_k) $$
+
+其中 $L$ 是迭代次数，$\mu$ 是步长（step size），取值范围为 $0 < \mu < 1$，而 $f'(x_k)$ 是函数 $f(x)$ 在 $x = x_k$ 处的导数。通常，最速下降法的性能取决于参数 $\mu$。也就是说：
+
+- 若 $\mu$ 过小，将需要较长时间才能得到所需的 $x$ 值，即收敛速度（convergence rate）较慢。
+- 若 $\mu$ 过大，可能会导致发散（divergence），从而无法获得所需的 $x$ 值。
+
+**示例 5.14**：给定函数
+$$ f(x) = 3 x e^{x^2} + \frac{3 x}{2 + x^2} - 5 $$
+使用最速下降法计算 $k=2$ 时的 $x_k$ 值，已知 $x_0 = 0$ 且 $\mu = 0.2$。
+
+**解**：对于给定的函数 $f(x)$，其导数为：
+$$ f'(x) = \frac{df(x)}{dx} = (3x)e^{x^2}(2x) + e^{x^2}(3) + \frac{(2+x^2)(3) - (3x)(2x)}{(2+x^2)^2} $$
+
+根据最速下降法，当 $k=0, 1, 2$ 时，$x_k$ 的值为：
+$$ x_0 = 0 $$
+$$ x_1 = x_0 - \mu f'(x_0) = 0 - (0.2) f'(0) = -0.9 $$
+$$ x_2 = x_1 - \mu f'(x_1) = (-0.9) - (0.2) f'(-0.9) = -4.524 $$
+
+因此，得到 $x_2 = -4.524$，证毕。
+
+### N 维最速下降法
+
+如果 $f$ 是多个独立变量的函数，即 $f(\mathbf{x})$，其中 $\mathbf{x} = [x_1, x_2, \dots, x_N]^{\mathrm{T}}$，则最速下降法仍可用于寻找使函数 $f(\mathbf{x})$ 最小的向量 $\mathbf{x}$，步骤如下：
+
+1) 设置初始值 $\mathbf{x} = \mathbf{x}_0$，其中 $\mathbf{x}_0$ 为任意常数向量。
+
+2) 对于 $k = 1$ 到 $L$：
+   $$ 2.1) \ \mathbf{x}_{k+1} = \mathbf{x}_k - \mu \nabla f(\mathbf{x}_k) $$
+
+其中 $\nabla$ 是梯度运算符（gradient operator），定义为：
+$$ \nabla f(\mathbf{x}) = \left[ \begin{array}{c} \frac{\partial f(\mathbf{x})}{\partial x_1} \\ \frac{\partial f(\mathbf{x})}{\partial x_2} \\ \vdots \\ \frac{\partial f(\mathbf{x})}{\partial x_N} \end{array} \right] $$
+
+同样地，N 维最速下降法的性能也取决于参数 $\mu$。
+
+**示例 5.15**：给定
+$$ f(x, y) = x^2 - y^2 - 3x + 3y + 2xy $$
+使用 N 维最速下降法计算 $k=2$ 时的 $x_k$ 和 $y_k$ 值，已知 $x_0 = 0, y_0 = 0$，且 $\mu = 0.1$。
+
+**解**：对于给定的 $f(x, y)$，其梯度为：
+$$ \nabla f(x, y) = \left[ \begin{array}{l} \frac{\partial f(x, y)}{\partial x} \\ \frac{\partial f(x, y)}{\partial y} \end{array} \right] = \left[ \begin{array}{l} 2x - 3 + 2y \\ -2y + 3 + 2x \end{array} \right] $$
+
+根据 N 维最速下降法，更新 $x_k$ 和 $y_k$ 的方程为：
+$$ x_{k+1} = x_k - \mu \frac{\partial f(x_k, y_k)}{\partial x} = x_k - \mu (2x_k - 3 + 2y_k) $$
+$$ y_{k+1} = y_k - \mu \frac{\partial f(x_k, y_k)}{\partial y} = y_k - \mu (-2y_k + 3 + 2x_k) $$
+
+写成矩阵形式为：
+$$ \underbrace{\left[ \begin{array}{l} x_{k+1} \\ y_{k+1} \end{array} \right]}_{\mathbf{x}_{k+1}} = \underbrace{\left[ \begin{array}{l} x_k \\ y_k \end{array} \right]}_{\mathbf{x}_k} - \mu \underbrace{\left[ \begin{array}{l} 2x_k - 3 + 2y_k \\ -2y_k + 3 + 2x_k \end{array} \right]}_{\nabla f(\mathbf{x}_k)} $$
+
+因此，当 $k=0, 1, 2$ 时的 $x_k$ 和 $y_k$ 值为：
+
+| $k$ | $x_k$ | $y_k$ |
+|---|---|---|
+| 0 | 0 | 0 |
+| 1 | $0 - (0.1)(-3) = 0.3$ | $0 - (0.1)(3) = -0.3$ |
+| 2 | $(0.3) - (0.1)[2(0.3) - 3 + 2(-0.3)] = 0.6$ | $-0.3 - (0.1)[-2(-0.3) + 3 + 2(0.3)] = -0.72$ |
+
+因此，得到 $x_2 = 0.6$ 且 $y_2 = -0.72$，证毕。
+
+### 与 MMSE 均衡器的关系
+
+根据 5.6.3 节中 MMSE 均衡器的设计方法，MMSE 均衡器的每个抽头系数旨在使方程 (5.116) 中的 MSE 最小。因此，可以认为该目标函数（cost function）为：
+
+$$ f(\mathbf{c}) = \mathrm{MSE} = \mathbf{c}^{\mathrm{T}} \mathbf{R}_{ss} \mathbf{c} - 2 \mathbf{c}^{\mathrm{T}} \mathbf{p} + E_a \tag{5.132} $$
+
+该函数 $f(\mathbf{c})$ 的梯度为：
+
+$$ \nabla f(\mathbf{c}) = 2 \mathbf{R}_{ss} \mathbf{c} - 2 \mathbf{p} \tag{5.133} $$
+
+假设 $f(\mathbf{c})$ 是一个具有唯一最小值的二次函数（quadratic function），则最优系数 $\mathbf{c}_{\mathrm{opt}}$ 可通过令 $\nabla f(\mathbf{c}) = 0$ 求得：
+
+$$ \mathbf{c}_{\mathrm{opt}} = \mathbf{R}_{ss}^{-1} \mathbf{p} \tag{5.134} $$
+
+这与方程 (5.123) 中的 $\mathbf{c}_{\mathrm{MMSE}}$ 相同。因此，通过最速下降法最小化 $\nabla f(\mathbf{c})$ 来寻找均衡器系数，可以保证 $\mathbf{c}_{\mathrm{opt}}$ 在 $\mu$ 选择合适的情况下收敛至 $\mathbf{c}_{\mathrm{MMSE}}$。
+
+### LMS 算法
+
+根据最速下降法，为了使方程 (5.132) 中的 $f(\mathbf{c})$ 最小化，可以使用以下更新方程：
+
+$$ \mathbf{c}_{k+1} = \mathbf{c}_k - \frac{\mu}{2} \nabla f(\mathbf{c}_k) \tag{5.135} $$
+
+其中 $\nabla f(\mathbf{c}_k)$ 可通过将方程 (5.118) 的 $\mathbf{R}_{ss}$ 和方程 (5.119) 的 $\mathbf{p}$ 代入方程 (5.133) 得到：
+
+$$ \begin{array}{lll} \nabla f(\mathbf{c}_k) & = & 2 (E[\mathbf{s}_k \mathbf{s}_k^{\mathrm{T}}] \mathbf{c}_k - E[\hat{a}_{k-d} \mathbf{s}_k]) \\ & = & 2 E[\mathbf{s}_k (\mathbf{s}_k^{\mathrm{T}} \mathbf{c}_k - \hat{a}_{k-d})] \\ & = & 2 E[\mathbf{s}_k (y_k - \hat{a}_{k-d})] \\ & = & 2 E[\mathbf{s}_k e_k] \end{array} \tag{5.136} $$
+
+其中 $y_k = \mathbf{s}_k^{\mathrm{T}} \mathbf{c}_k$，且 $e_k = y_k - \hat{a}_{k-d}$ 是基于图 5.38 信道模型的误差。将 $\nabla f(\mathbf{c}_k)$ 代入方程 (5.135) 得：
+
+$$ \mathbf{c}_{k+1} = \mathbf{c}_k - \mu E[e_k \mathbf{s}_k] \tag{5.137} $$
+
+在实际应用中，直接计算期望值 $E[e_k \mathbf{s}_k]$ 非常困难。一种解决方法是使用样本平均值（sample mean）进行估计 [35]：
+
+$$ \hat{E}[e_k \mathbf{s}_k] = \frac{1}{L_a} \sum_{i=0}^{L_a-1} e_{k-i} \mathbf{s}_{k-i} \tag{5.138} $$
+
+其中 $L_a$ 为数据序列 $\{s_k\}$ 的总长度。将此估计值应用于最速下降法，方程 (5.137) 可改写为：
+
+$$ \mathbf{c}_{k+1} = \mathbf{c}_k - \frac{\mu}{L_a} \sum_{i=0}^{L_a-1} e_{k-i} \mathbf{s}_{k-i} \tag{5.139} $$
+
+此外，如果仅使用单点样本估计（即 $L_a = 1$），则有：
+
+$$ \hat{E}[e_k \mathbf{s}_k] = e_k \mathbf{s}_k \tag{5.140} $$
+
+因此，均衡器系数的更新方程变为：
+
+$$ \mathbf{c}_{k+1} = \mathbf{c}_k - \mu \{ e_k \mathbf{s}_k \} \tag{5.141} $$
+
+该方程通常被称为“最小均方（LMS: least mean square）算法”或简称“LMS 算法”。该算法在各种应用中非常流行，主要因为其具有以下优点：
+
+1) LMS 算法无需事先知道输入数据和信道的特性即可运行。
+2) 只要 $\mu$ 足够小，即可保证 LMS 算法得到的 $\mathbf{c}$ 值最终会收敛于 $\mathbf{c}_{\mathrm{MMSE}}$（尽管可能需要较长时间）。
+3) 该算法具有良好的鲁棒性、稳定性，且易于实现为电子电路。
+
+综上所述，若基于图 5.38 的系统模型使用 LMS 算法实现自适应均衡器，其工作步骤如下：
+
+1) 初始化 $\mathbf{c}_0$ 为任意向量。
+2) 对于 $k = 1$ 到 $L$（其中 $L \leq L_a$）：
+   2.1) 计算误差 $e_k = y_k - \hat{a}_{k-d}$。
+   2.2) 更新均衡器系数 $\mathbf{c}_{k+1} = \mathbf{c}_k - \mu \{ e_k \mathbf{s}_k \}$。
+
+关于 LMS 算法的其他细节，如收敛条件等，可参考资料 [35]。
+
+### 自适应均衡器的运行状态
+
+自适应均衡器面临的一个主要问题是：在系数更新过程的初始阶段，系统并不知道一个理想的 $\mathbf{c}_0$ 应该是怎样的。因此，如果用于计算误差 $e_k$ 的 $\hat{a}_{k-d}$ 数据不可靠，LMS 算法可能会计算出错误的均衡器系数。相反，如果 $\hat{a}_{k-d}$ 是可靠的，LMS 算法将高效运行。因此，在实际应用中，传输的数据通常分为两个主要部分：
+
+1) 第一部分是**测试信号**，称为**前导码（preamble）**。发送端和接收端均预先已知前导码的特征。通常前导码仅包含少量比特。
+2) 第二部分是**实际数据（real data）**。这部分数据通常具有随机特性，包含大量比特（例如在硬盘驱动器中，这部分数据约为 4096 比特）。
+
+因此，自适应均衡器根据数据的特性分为两种运行模式：
+
+1) **捕获模式（acquisition mode）** 或 **训练模式（training mode）**：处于初始阶段，自适应均衡器利用前导码来计算合适的均衡器系数。由于已知前导码的具体内容，均衡器可以使用较大的 $\mu$（步长），以便尽可能快地获得合适的系数。
+2) **跟踪模式（tracking mode）**：在此阶段，自适应均衡器利用实际数据来调整均衡器系数。由于实际数据具有随机性，均衡器无法保证 $\hat{a}_{k-d}$ 始终 100% 可靠。因此，均衡器应使用较小的 $\mu$ 来调整系数，以防止产生较大误差。
+
+![](images/chapter_5/45a6dcdab77c11a392cac6029483338cc1b8efd8afd970bd2b23f3de13f591a3.jpg)
+$\mu = 0.01$ 以及 (b) $\mu = 0.001$
+
+考虑图 5.38 中的信道模型，设定 $H(D) = 1 - D^2$，并采用具有 11 个抽头的自适应均衡器（基于 LMS 算法），目标是使均衡器输出尽可能接近 $a_k$。图 5.43 显示了在步长 $\mu = 0.01$ 和 $\mu = 0.001$ 时，11 个抽头系数的变化情况。条件为：输入数据 $a_k \in \{\pm 1\}$ 共 4000 比特，运行在 $E_b/N_0 = 9\mathrm{dB}$ 环境下，且假设所有输入数据均为前导码（即均衡器仅在捕获模式下运行）。从图中可以看出，当使用较大的 $\mu$ 时，各抽头系数的变化较为剧烈（在跟踪模式下容易导致出错），但收敛速度较快（fast convergence）。相反，当 $\mu$ 较小时，抽头系数变化缓慢（在跟踪模式下产生的误差较少），但收敛速度较慢（slow convergence）。因此，在实际应用中，自适应均衡器在捕获模式下使用较大的 $\mu$，而在跟踪模式下使用较小的 $\mu$。
+
+![](images/chapter_5/9e62d6c75c5cab67f8d29ff419d6e820ffa879138f300d502c5be92da366f73f.jpg)
+图 5.44: 硬盘驱动器信号处理系统的模型
