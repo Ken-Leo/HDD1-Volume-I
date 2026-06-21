@@ -26,8 +26,8 @@
 
 - [ ] Chapter 6: Pending
   
-  - Completed: 6.1
-  - Current: Section 6.2
+  - Completed: 6.1, 6.2
+  - Current: Section 6.2.5
 
 - [ ] Appendices: Pending
   
