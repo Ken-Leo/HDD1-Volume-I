@@ -15,9 +15,8 @@
 - [x] Chapter 3: Completed
 
 - [x] Chapter 4: Completed
-  
-        - Completed: Section 4.1, 4.2, 4.2.1, 4.2.2, 4.2.3, 4.2.4, 4.2.5, 4.2.6, 4.3, 4.3.1, 4.3.2, 4.3.3, 4.3.4, 4.3.5, 4.3.6, 4.4
-        - Current: Completed (Chapter 4)
+   
+         - Completed: Section 4.1, 4.2, 4.2.1, 4.2.2, 4.2.3, 4.2.4, 4.2.5, 4.2.6, 4.3, 4.3.1, 4.3.2, 4.3.3, 4.3.4, 4.3.5, 4.3.6, 4.4, 4.5
 
 - [x] Chapter 5: Completed
   
@@ -26,15 +25,15 @@
 
 - [x] Chapter 6: Completed
 
-- [ ] Appendices: Pending
+- [ ] Appendices: In Progress
   
-  - Completed: nothing
-  - Current: empty
+  - Completed: Formulae, Partial Glossary (up to "ISI")
+  - Current: Q-Table, Glossary remainder (from line 141), Bibliography
 
 ## Remaining Tasks
 
 - [x] Translate Chapter 5
-- [ ] Translate Chapter 6
+- [x] Translate Chapter 6
 - [ ] Translate Appendices
 - [ ] Refine README
 - [ ] Cleanup temp files
@@ -48,5 +47,5 @@ To prevent data loss and ensure grounding, EVERY section must follow this strict
 3. **High-Fidelity Translation**: Translate to Chinese. Preserve ALL LaTeX equations.
 4. **Safe Append**: Use `edit` tool. **FORBIDDEN**: Do not use `write` on existing files.
 5. **Progress Sync**: Move section to `Completed` in this file, update `Current` pointer.
-   6 a. **Verifiable Commit**: `git add` and `git commit` immediately.
-6. **Final Verification**: Read target file end to confirm successful write.
+6. **Verifiable Commit**: `git add` and `git commit` immediately.
+7. **Final Verification**: Read target file end to confirm successful write.
