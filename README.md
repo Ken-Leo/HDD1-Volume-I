@@ -8,7 +8,7 @@
 
 ## English
 
-This repository contains a high-fidelity Chinese translation of the technical documentation **"Basic Read-Write Channels" (Volume I)**. The translation focuses on preserving technical accuracy, especially for mathematical equations and domain-specific terminology related to hard disk drive (HDD) signal processing.
+This repository contains a high-fidelity Chinese translation of the book **"Basic Read-Write Channels" (Volume I)**. The translation focuses on preserving technical accuracy, especially for mathematical equations and domain-specific terminology related to hard disk drive (HDD) signal processing.
 
 ### Table of Contents
 
@@ -28,7 +28,7 @@ This repository contains a high-fidelity Chinese translation of the technical do
 
 ### Copyright and Attribution
 
-I have tried to get in touch with Prof. Piya but I failed. Considering the copyright, I would appreciate it if those who may concern contact me. The translation work is done with the help of Gemma-4-31B-it.
+I have tried to get in touch with the author, Professor Piya Kovintavewat, but I failed. Considering the copyright, I would appreciate it if those who may concern contact me. The translation work is done with the help of Gemma-4-31B-it.
 
 ---
 
